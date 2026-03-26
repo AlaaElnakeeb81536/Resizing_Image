@@ -1,99 +1,383 @@
-
-
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>معدل المقاسات الاحترافي | Pro Resizer</title>
 <style>
+/* المتغيرات والتنسيق العام */
+:root {
+    --primary: #1a73e8;
+    --primary-dark: #1557b0;
+    --bg-page: #f8f9fa;
+    --bg-card: #ffffff;
+    --border-color: #e0e0e0;
+    --text-main: #202124;
+    --text-sub: #5f6368;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+}
+
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);background:var(--color-background-tertiary)}
-.app{display:grid;grid-template-columns:340px 1fr;gap:16px;padding:16px;min-height:100vh;direction:rtl}
-@media(max-width:800px){.app{grid-template-columns:1fr}}
-.sidebar{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:20px;display:flex;flex-direction:column;gap:16px;height:fit-content;position:sticky;top:16px}
-.main{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:20px}
-.step-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.step-num{background:#1a73e8;color:white;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
-.drop-zone{border:2px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:20px;text-align:center;cursor:pointer;transition:all 0.2s}
-.drop-zone:hover,.drop-zone.drag{border-color:#1a73e8;background:#f0f7ff}
-.drop-zone img{max-height:100px;border-radius:6px;margin-bottom:8px}
-.drop-icon{width:40px;height:40px;background:#f0f7ff;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-.custom-row{display:flex;gap:8px;background:var(--color-background-secondary);padding:10px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary)}
-.custom-row input{flex:1;padding:6px 10px;font-size:13px;border:0.5px solid var(--color-border-secondary);border-radius:6px;background:var(--color-background-primary);color:var(--color-text-primary)}
-.add-btn{background:#1a73e8;color:white;border:none;width:34px;height:34px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.size-list{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
-.size-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--border-radius-md);border:2px solid var(--color-border-tertiary);cursor:pointer;transition:all 0.2s;background:var(--color-background-primary)}
-.size-item.sel{border-color:#1a73e8;background:#f0f7ff}
-.chk{width:18px;height:18px;border-radius:4px;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.chk.on{background:#1a73e8;border-color:#1a73e8;color:white}
-.size-name{font-size:12px;font-weight:500;color:var(--color-text-primary);flex:1}
-.size-dim{font-size:10px;color:var(--color-text-secondary)}
-.cat-badge{font-size:10px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:2px 8px;border-radius:20px}
-.go-btn{background:#1a73e8;color:white;border:none;padding:14px;border-radius:var(--border-radius-md);font-size:14px;font-weight:500;cursor:pointer;width:100%;transition:all 0.2s}
-.go-btn:hover{background:#1557b0}
-.go-btn:disabled{background:#ccc;cursor:not-allowed}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:60px 20px;text-align:center}
-.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.result-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden}
-.preview-area{background:var(--color-background-secondary);height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.preview-area canvas{max-width:100%;max-height:100%;object-fit:contain}
-.card-body{padding:14px;display:flex;flex-direction:column;gap:10px}
-.card-title{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-.ctrl-row{display:flex;align-items:center;gap:8px}
-.ctrl-label{font-size:11px;color:var(--color-text-secondary);width:80px;flex-shrink:0}
-.ctrl-row input[type=range]{flex:1;height:4px}
-.ctrl-val{font-size:11px;color:var(--color-text-secondary);width:32px;text-align:left}
-.dl-btn{background:#f0f7ff;color:#1a73e8;border:none;padding:10px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;width:100%;transition:all 0.2s}
-.dl-btn:hover{background:#1a73e8;color:white}
-.dl-all-btn{background:#28a745;color:white;border:none;padding:10px 20px;border-radius:var(--border-radius-md);font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:8px}
-.results-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
-.bg-btns{display:flex;gap:6px}
-.bg-btn{padding:4px 10px;border-radius:6px;border:0.5px solid var(--color-border-secondary);font-size:11px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary)}
-.bg-btn.on{background:#f0f7ff;border-color:#1a73e8;color:#1a73e8}
-.reset-btn{background:none;border:0.5px solid var(--color-border-secondary);padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer;color:var(--color-text-secondary);width:100%}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-main);
+}
+
+.app {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 24px;
+    padding: 24px;
+    max-width: 1600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    direction: rtl;
+}
+
+@media(max-width:900px){ .app { grid-template-columns: 1fr; padding: 12px; } }
+
+/* Sidebar Styling */
+.sidebar {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: fit-content;
+    position: sticky;
+    top: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--primary);
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.step-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.step-num {
+    background: var(--primary);
+    color: white;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Drop Zone UI */
+.drop-zone {
+    border: 2px dashed #c2d1e6;
+    border-radius: var(--radius-md);
+    padding: 30px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #fbfcfe;
+}
+
+.drop-zone:hover, .drop-zone.drag {
+    border-color: var(--primary);
+    background: #f0f7ff;
+    transform: translateY(-2px);
+}
+
+.drop-zone img { max-height: 100px; border-radius: 8px; margin-bottom: 8px; box-shadow: var(--shadow-sm); }
+
+.drop-icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+/* --- تعديل Custom Input Row المصلح --- */
+.custom-row {
+    display: flex;
+    gap: 8px;
+    background: #f1f3f4;
+    padding: 8px;
+    border-radius: var(--radius-md);
+    align-items: center; /* لضمان توسيط العناصر رأسياً */
+}
+
+.custom-row input {
+    flex: 1;
+    min-width: 0; /* مهمة جداً لمنع الـ input من الخروج عن الحدود */
+    padding: 8px;
+    font-size: 13px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    outline: none;
+    transition: 0.2s;
+    text-align: center;
+}
+
+.add-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: 0.2s;
+    flex-shrink: 0; /* تمنع الزرار من الانكماش أو الاختفاء */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Size List */
+.size-list {
+    max-height: 250px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 4px;
+}
+
+.size-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: 0.2s;
+    background: white;
+}
+
+.size-item.sel { border-color: var(--primary); background: #f0f7ff; }
+
+.chk {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 2px solid #bdc1c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chk.on { background: var(--primary); border-color: var(--primary); color: white; }
+
+.size-name { font-size: 13px; font-weight: 600; flex: 1; }
+.size-dim { font-size: 11px; color: var(--text-sub); }
+.cat-badge { font-size: 9px; color: var(--primary); background: #e8f0fe; padding: 2px 8px; border-radius: 12px; font-weight: bold; }
+
+.go-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26,115,232,0.2);
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.go-btn:disabled { background: #dadce0; cursor: not-allowed; box-shadow: none; }
+
+/* Main Area */
+.main {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.empty-state div:first-child {
+    font-size: 64px;
+    background: #f8f9fa;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Results Area */
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 16px;
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.result-card {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: white;
+    transition: 0.3s;
+}
+
+.preview-area {
+    background: #f1f3f4;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.preview-area canvas { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+.card-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+.ctrl-row { display: flex; align-items: center; gap: 12px; }
+.ctrl-label { font-size: 11px; color: var(--text-sub); width: 75px; }
+input[type=range] { flex: 1; accent-color: var(--primary); }
+
+.bg-btns { display: flex; gap: 6px; }
+.bg-btn { padding: 4px 10px; border-radius: 6px; border: 1px solid #ddd; font-size: 11px; cursor: pointer; background: #fff; }
+.bg-btn.on { background: #f0f7ff; border-color: var(--primary); color: var(--primary); }
+
+.dl-btn {
+    background: #f1f3f4;
+    color: var(--text-main);
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.dl-btn:hover { background: var(--primary); color: white; }
+
+.dl-all-btn {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reset-btn {
+    background: none;
+    border: 1px solid #eee;
+    padding: 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    color: var(--text-sub);
+    width: 100%;
+    margin-bottom: 5px;
+}
 </style>
+</head>
+<body>
 
 <div class="app" id="app">
-  <aside class="sidebar">
-    <div style="display:flex;align-items:center;gap:8px;color:#1a73e8">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      <span style="font-size:16px;font-weight:500">مُعدل المقاسات الاحترافي</span>
-    </div>
-
-    <div>
-      <div class="step-title"><div class="step-num">1</div> رفع الصورة الأصلية</div>
-      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
-        <div id="dropContent">
-          <div class="drop-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-          <p style="font-size:13px;font-weight:500;color:#1a73e8">اضغط أو اسحب الصورة هنا</p>
-          <p style="font-size:11px;color:var(--color-text-secondary)">يدعم JPG, PNG, WebP</p>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            <span style="font-size:18px;font-weight:700">مُعدل المقاسات</span>
         </div>
-      </div>
-    </div>
 
-    <div>
-      <div class="step-title"><div class="step-num">2</div> مقاس مخصص</div>
-      <div class="custom-row">
-        <input type="number" id="cw" placeholder="العرض" min="1">
-        <input type="number" id="ch" placeholder="الطول" min="1">
-        <button class="add-btn" onclick="addCustom()">+</button>
-      </div>
-    </div>
+        <div>
+            <div class="step-title"><div class="step-num">1</div> رفع الصورة الأصلية</div>
+            <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                <input type="file" id="fileInput" accept="image/*" style="display:none">
+                <div id="dropContent">
+                    <div class="drop-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    </div>
+                    <p style="font-size:14px;font-weight:600;color:#1a73e8">اضغط لرفع الصورة</p>
+                </div>
+            </div>
+        </div>
 
-    <div>
-      <div class="step-title"><div class="step-num">3</div> اختر المقاسات</div>
-      <div class="size-list" id="sizeList"></div>
-    </div>
+        <div>
+            <div class="step-title"><div class="step-num">2</div> مقاس مخصص</div>
+            <div class="custom-row">
+                <input type="number" id="cw" placeholder="عرض">
+                <input type="number" id="ch" placeholder="طول">
+                <button class="add-btn" onclick="addCustom()">+</button>
+            </div>
+        </div>
 
-    <button class="go-btn" id="goBtn" onclick="showResults()" disabled>عرض النتائج وتعديل الزوايا</button>
-  </aside>
+        <div>
+            <div class="step-title"><div class="step-num">3</div> اختر المقاسات</div>
+            <div class="size-list" id="sizeList"></div>
+        </div>
 
-  <main class="main" id="mainArea">
-    <div class="empty-state" id="emptyState">
-      <div style="font-size:48px;background:var(--color-background-secondary);width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center">✨</div>
-      <div>
-        <p style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px">النتائج ستظهر هنا بأعلى جودة</p>
-        <p style="font-size:13px;color:var(--color-text-secondary);max-width:360px">ارفع صورتك واختر المقاسات المناسبة، وسيتم توليد نسخ احترافية مع إمكانية التحكم الكامل في القص والاحتواء.</p>
-      </div>
-    </div>
-    <div id="resultsArea" style="display:none"></div>
-  </main>
+        <button class="go-btn" id="goBtn" onclick="showResults()" disabled>توليد المعاينة والنتائج</button>
+    </aside>
+
+    <main class="main" id="mainArea">
+        <div class="empty-state" id="emptyState">
+            <div>✨</div>
+            <div>
+                <p style="font-size:22px;font-weight:700;color:var(--text-main);margin-bottom:8px">بانتظار إبداعك..</p>
+                <p style="font-size:14px;color:var(--text-sub);max-width:400px;line-height:1.6">ارفع صورتك الآن لضبط مقاساتها لمختلف منصات التواصل الاجتماعي بضغطة زر واحدة.</p>
+            </div>
+        </div>
+        <div id="resultsArea" style="display:none"></div>
+    </main>
 </div>
 
 <canvas id="workCanvas" style="display:none"></canvas>
@@ -113,12 +397,6 @@ let sourceImg=null;
 let offsets={};
 
 function defaultOffset(){return{x:0.5,y:0.5,zoom:1,bgStyle:'none',bgColor:'#ffffff',padding:0}}
-
-function getOffset(size){
-  const k=size.w+'x'+size.h;
-  if(!offsets[k]) offsets[k]=defaultOffset();
-  return offsets[k];
-}
 
 function renderSizeList(){
   const el=document.getElementById('sizeList');
@@ -169,7 +447,7 @@ function loadFile(file){
     const img=new Image();
     img.onload=()=>{
       sourceImg=img;
-      document.getElementById('dropContent').innerHTML=`<img src="${img.src}"><p style="font-size:11px;color:#1a73e8;font-weight:500">تم الرفع بنجاح ✅</p>`;
+      document.getElementById('dropContent').innerHTML=`<img src="${img.src}"><p style="font-size:12px;color:#1a73e8;font-weight:600">تم الرفع بنجاح ✅</p>`;
       updateGoBtn();
     };
     img.src=ev.target.result;
@@ -187,6 +465,9 @@ function drawToCanvas(size,off){
   const sw=size.w-px*2,sh=size.h-py*2;
   const dw=sw*off.zoom,dh=sh*off.zoom;
   const dx=px+(sw-dw)*off.x,dy=py+(sh-dh)*off.y;
+  
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size.w,size.h);
+
   if(pad>0){
     if(off.bgStyle==='blur'){
       ctx.save();ctx.filter='blur(30px) brightness(0.8)';
@@ -197,8 +478,8 @@ function drawToCanvas(size,off){
       ctx.restore();
     } else if(off.bgStyle==='solid'){
       ctx.fillStyle=off.bgColor;ctx.fillRect(0,0,size.w,size.h);
-    } else {ctx.fillStyle='#fff';ctx.fillRect(0,0,size.w,size.h)}
-  } else {ctx.fillStyle='#fff';ctx.fillRect(0,0,size.w,size.h)}
+    }
+  }
   ctx.drawImage(sourceImg,dx,dy,dw,dh);
   return canvas.toDataURL('image/png');
 }
@@ -206,18 +487,20 @@ function drawToCanvas(size,off){
 function buildPreview(size,off){
   const canvas=document.createElement('canvas');
   const ratio=size.w/size.h;
-  const maxW=260,maxH=140;
+  const maxW=260;
   let cw=maxW,ch=maxW/ratio;
-  if(ch>maxH){ch=maxH;cw=ch*ratio}
+  if(ch>140){ch=140;cw=ch*ratio}
   canvas.width=cw;canvas.height=ch;
-  canvas.style.width=cw+'px';canvas.style.height=ch+'px';
   const ctx=canvas.getContext('2d');
-  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+  ctx.imageSmoothingEnabled=true;
   const pad=off.padding||0;
   const px=cw*pad,py=ch*pad;
   const sw=cw-px*2,sh=ch-py*2;
   const dw=sw*off.zoom,dh=sh*off.zoom;
   const dx=px+(sw-dw)*off.x,dy=py+(sh-dh)*off.y;
+
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch);
+
   if(pad>0){
     if(off.bgStyle==='blur'){
       ctx.save();ctx.filter='blur(8px) brightness(0.8)';
@@ -228,8 +511,8 @@ function buildPreview(size,off){
       ctx.restore();
     } else if(off.bgStyle==='solid'){
       ctx.fillStyle=off.bgColor;ctx.fillRect(0,0,cw,ch);
-    } else {ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch)}
-  } else {ctx.fillStyle='#fff';ctx.fillRect(0,0,cw,ch)}
+    }
+  }
   ctx.drawImage(sourceImg,dx,dy,dw,dh);
   return canvas;
 }
@@ -241,8 +524,8 @@ function showResults(){
   const sizes=allSizes.filter(s=>selected.has(s.id));
   
   area.innerHTML=`<div class="results-header">
-    <div><p style="font-size:18px;font-weight:500;color:#1a73e8">النتائج الاحترافية HD ✨</p><p style="font-size:12px;color:var(--color-text-secondary)">يمكنك تعديل وضعية كل صورة قبل التحميل.</p></div>
-    <button class="dl-all-btn" onclick="downloadAll()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> تحميل الكل</button>
+    <div><p style="font-size:18px;font-weight:700;color:#1a73e8">النتائج الاحترافية ✨</p></div>
+    <button class="dl-all-btn" onclick="downloadAll()">تحميل الكل</button>
   </div>
   <div class="results-grid" id="resultsGrid"></div>`;
   
@@ -267,46 +550,39 @@ function renderCard(size,card){
   prev.className='preview-area';
   prev.appendChild(prevCanvas);
   const badge=document.createElement('div');
-  badge.style.cssText='position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:500';
+  badge.style.cssText='position:absolute;top:8px;right:8px;background:rgba(255,255,255,0.9);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700';
   badge.textContent=size.w+' × '+size.h;
   prev.appendChild(badge);
   card.appendChild(prev);
 
   const body=document.createElement('div');
   body.className='card-body';
-  body.innerHTML=`<div class="card-title">${size.name}</div>
+  body.innerHTML=`<div class="card-title" style="font-size:13px; font-weight:600;">${size.name}</div>
   <button class="reset-btn" onclick="resetCard('${size.id}','${k}')">↺ إعادة ضبط</button>
-  <div class="ctrl-row"><span class="ctrl-label">تكبير (Zoom):</span><input type="range" min="0.5" max="2" step="0.01" value="${off.zoom}" oninput="updateOff('${k}','zoom',+this.value,this)" /><span class="ctrl-val" id="z-${k}">${Math.round(off.zoom*100)}%</span></div>
-  <div class="ctrl-row"><span class="ctrl-label">هامش أمان:</span><input type="range" min="0" max="0.4" step="0.01" value="${off.padding}" oninput="updateOff('${k}','padding',+this.value,this)"/><span class="ctrl-val" id="p-${k}">${Math.round(off.padding*100)}%</span></div>
+  <div class="ctrl-row"><span class="ctrl-label">تكبير:</span><input type="range" min="0.5" max="2" step="0.01" value="${off.zoom}" oninput="updateOff('${k}','zoom',+this.value,this)" /></div>
+  <div class="ctrl-row"><span class="ctrl-label">هامش:</span><input type="range" min="0" max="0.4" step="0.01" value="${off.padding}" oninput="updateOff('${k}','padding',+this.value,this)"/></div>
   ${off.zoom>1?`<div class="ctrl-row"><span class="ctrl-label">أفقي:</span><input type="range" min="0" max="1" step="0.001" value="${off.x}" oninput="updateOff('${k}','x',+this.value,this)"/></div><div class="ctrl-row"><span class="ctrl-label">رأسي:</span><input type="range" min="0" max="1" step="0.001" value="${off.y}" oninput="updateOff('${k}','y',+this.value,this)"/></div>`:''}
-  ${off.padding>0?`<div><div style="font-size:11px;color:var(--color-text-secondary);margin-bottom:6px">نمط الخلفية:</div><div class="bg-btns"><button class="bg-btn${off.bgStyle==='blur'?' on':''}" onclick="setBg('${k}','blur','${size.id}')">تضبيب</button><button class="bg-btn${off.bgStyle==='solid'?' on':''}" onclick="setBg('${k}','solid','${size.id}')">لون سادة</button><button class="bg-btn${off.bgStyle==='none'?' on':''}" onclick="setBg('${k}','none','${size.id}')">بدون</button></div>${off.bgStyle==='solid'?`<div style="display:flex;align-items:center;gap:8px;margin-top:8px"><input type="color" value="${off.bgColor}" oninput="updateOff('${k}','bgColor',this.value,null,'${size.id}')" style="width:32px;height:32px;border:none;border-radius:4px;cursor:pointer"><span style="font-size:11px;color:var(--color-text-secondary)">${off.bgColor}</span></div>`:''}  </div>`:''}
-  <button class="dl-btn" onclick="downloadOne('${size.id}')">⬇ تحميل هذه الصورة</button>`;
+  ${off.padding>0?`<div class="bg-btns"><button class="bg-btn${off.bgStyle==='blur'?' on':''}" onclick="setBg('${k}','blur','${size.id}')">تضبيب</button><button class="bg-btn${off.bgStyle==='solid'?' on':''}" onclick="setBg('${k}','solid','${size.id}')">لون</button><button class="bg-btn${off.bgStyle==='none'?' on':''}" onclick="setBg('${k}','none','${size.id}')">بدون</button></div>`:''}
+  <button class="dl-btn" onclick="downloadOne('${size.id}')">⬇ تحميل</button>`;
   card.appendChild(body);
 }
 
 function updateOff(k,prop,val,el,sizeId){
   offsets[k][prop]=val;
-  if(el){
-    if(prop==='zoom') document.getElementById('z-'+k).textContent=Math.round(val*100)+'%';
-    if(prop==='padding') document.getElementById('p-'+k).textContent=Math.round(val*100)+'%';
-  }
   const size=allSizes.find(s=>s.w+'x'+s.h===k);
-  if(size){
-    const card=document.getElementById('card-'+size.id);
-    if(card) renderCard(size,card);
-  }
+  if(size) renderCard(size, document.getElementById('card-'+size.id));
 }
 
 function setBg(k,style,sizeId){
   offsets[k].bgStyle=style;
   const size=allSizes.find(s=>s.id===sizeId);
-  if(size){const card=document.getElementById('card-'+sizeId);if(card)renderCard(size,card)}
+  if(size) renderCard(size,document.getElementById('card-'+sizeId));
 }
 
 function resetCard(sizeId,k){
   offsets[k]=defaultOffset();
   const size=allSizes.find(s=>s.id===sizeId);
-  if(size){const card=document.getElementById('card-'+sizeId);if(card)renderCard(size,card)}
+  if(size) renderCard(size,document.getElementById('card-'+sizeId));
 }
 
 function downloadOne(sizeId){
@@ -314,7 +590,7 @@ function downloadOne(sizeId){
   if(!size||!sourceImg) return;
   const off=offsets[size.w+'x'+size.h]||defaultOffset();
   const url=drawToCanvas(size,off);
-  const a=document.createElement('a');a.href=url;a.download=size.name+'_HD.png';a.click();
+  const a=document.createElement('a');a.href=url;a.download=size.name+'.png';a.click();
 }
 
 async function downloadAll(){
@@ -327,3 +603,5 @@ async function downloadAll(){
 
 renderSizeList();
 </script>
+</body>
+</html>
